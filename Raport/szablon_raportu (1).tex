@@ -1,0 +1,247 @@
+```latex
+\documentclass[12pt]{article}
+\input{article_style.tex}
+
+\title{Raport projektowy\\Uczenie się ze wzmocnieniem}
+\author{Sebastian Gęborys}
+\date{2026/2027}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Informacje podstawowe}
+
+\begin{center}
+\begin{tabular}{p{0.34\textwidth}p{0.56\textwidth}}
+\toprule
+Element & Informacja \\
+\midrule
+Imię i nazwisko & Sebastian Gęborys \\
+Numer albumu & 179487 \\
+Kierunek/specjalność & Sztuczna inteligencja \\
+Tytuł projektu & Implementacja i analiza agenta wykorzystującego uczenie ze wzmocnieniem do autonomicznego sterowania pojazdem w grze TrackMania 2020 z wykorzystaniem biblioteki TrackmaniaRL \\
+Link do repozytorium & Do uzupełnienia \\
+Data oddania & Do uzupełnienia \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Temat i cel projektu}
+
+\subsection{Opis problemu}
+
+Przedmiotem projektu jest opracowanie agenta wykorzystującego uczenie ze wzmocnieniem (Reinforcement Learning) do autonomicznego sterowania pojazdem w grze TrackMania 2020.
+
+Zadaniem agenta będzie samodzielne prowadzenie samochodu po wyznaczonej trasie poprzez podejmowanie decyzji dotyczących przyspieszania, hamowania oraz skręcania. Agent będzie otrzymywał informacje telemetryczne opisujące aktualną sytuację pojazdu i jego położenie względem trasy. Na podstawie tych informacji będzie wybierał odpowiednie działania sterujące.
+
+Do komunikacji z grą oraz pozyskiwania danych telemetrycznych zostanie wykorzystana biblioteka TrackmaniaRL.
+
+Problem polega na opracowaniu strategii jazdy pozwalającej agentowi na skuteczne pokonywanie trasy, ograniczenie błędów oraz uzyskiwanie możliwie krótkiego czasu przejazdu.
+
+\subsection{Cel agenta}
+
+Głównym celem agenta jest nauczenie się autonomicznego sterowania pojazdem w grze TrackMania 2020 w taki sposób, aby możliwie szybko i skutecznie pokonywał wyznaczoną trasę.
+
+Agent powinien nauczyć się:
+\begin{itemize}
+    \item dobierania odpowiedniego przyspieszenia i hamowania,
+    \item wykonywania skrętów z uwzględnieniem geometrii trasy,
+    \item dostosowywania prędkości do aktualnych warunków jazdy,
+    \item unikania wypadania poza trasę i innych błędów jazdy,
+    \item planowania kolejnych działań z uwzględnieniem ich przyszłych konsekwencji.
+\end{itemize}
+
+Działanie agenta będzie oceniane na podstawie czasu przejazdu, skuteczności ukończenia trasy, liczby błędów oraz postępu uzyskiwanego podczas kolejnych epizodów.
+
+\subsection{Uzasadnienie zastosowania uczenia się ze wzmocnieniem}
+
+Problem autonomicznego sterowania pojazdem w grze TrackMania 2020 można rozpatrywać jako zadanie uczenia się ze wzmocnieniem, ponieważ wymaga podejmowania sekwencyjnych decyzji wpływających na dalszy przebieg jazdy.
+
+Agent w każdym kroku otrzymuje obserwację opisującą aktualną sytuację pojazdu, a następnie wybiera akcję sterującą. Wykonanie tej akcji zmienia położenie, prędkość oraz orientację samochodu, co wpływa na kolejne dostępne możliwości działania.
+
+Decyzje podejmowane przez agenta mają konsekwencje wykraczające poza pojedynczy krok. Przykładowo zbyt duża prędkość przed zakrętem może utrudnić jego pokonanie, doprowadzić do wypadnięcia z trasy i uniemożliwić uzyskanie dobrego czasu przejazdu. Z kolei wcześniejsze ograniczenie prędkości może pozwolić na bezpieczniejsze pokonanie zakrętu i uzyskanie lepszego wyniku całego przejazdu.
+
+Istotny jest zatem wynik długoterminowy, a nie tylko natychmiastowa korzyść wynikająca z pojedynczej akcji.
+
+Zastosowanie uczenia ze wzmocnieniem pozwoli agentowi na samodzielne doskonalenie strategii jazdy poprzez wielokrotne interakcje ze środowiskiem i analizowanie otrzymywanych nagród.
+
+Problem nie jest zwykłą klasyfikacją ani jednorazową optymalizacją, ponieważ agent musi stale reagować na zmieniający się stan pojazdu i podejmować kolejne decyzje w trakcie całego przejazdu.
+
+\section{Formalizacja problemu RL/MDP}
+
+Problem zostanie wstępnie opisany jako proces decyzyjny Markowa (MDP), w którym agent podejmuje działania w środowisku gry, otrzymuje obserwacje i nagrody, a następnie na ich podstawie uczy się skuteczniejszego sterowania pojazdem.
+
+\subsection{Agent i środowisko}
+
+Agentem jest algorytm uczenia ze wzmocnieniem odpowiedzialny za autonomiczne sterowanie pojazdem w grze TrackMania 2020.
+
+Środowiskiem jest gra TrackMania 2020, w której pojazd porusza się po wyznaczonej trasie zgodnie z zaimplementowanym modelem fizyki gry.
+
+Do komunikacji ze środowiskiem, odczytu danych telemetrycznych oraz przekazywania poleceń sterujących zostanie wykorzystana biblioteka TrackmaniaRL.
+
+Interakcja agenta ze środowiskiem będzie przebiegać w następujący sposób:
+\begin{enumerate}
+    \item Środowisko udostępnia agentowi aktualną obserwację telemetryczną.
+    \item Agent analizuje otrzymane informacje.
+    \item Agent wybiera akcję sterującą.
+    \item Wybrana akcja jest przekazywana do gry.
+    \item Pojazd wykonuje odpowiedni ruch.
+    \item Środowisko zwraca nową obserwację oraz wartość nagrody.
+\end{enumerate}
+
+Proces jest powtarzany do momentu zakończenia epizodu.
+
+\subsection{Stan lub obserwacja}
+
+Obserwacja agenta będzie opierać się na danych telemetrycznych udostępnianych przez bibliotekę TrackmaniaRL.
+
+Wstępnie zakłada się wykorzystanie następujących informacji:
+
+\begin{center}
+\begin{tabular}{p{0.30\textwidth}p{0.60\textwidth}}
+\toprule
+Składowa stanu/obserwacji & Znaczenie \\
+\midrule
+Pozycja pojazdu & Aktualne położenie samochodu w przestrzeni gry. \\
+Prędkość & Aktualna prędkość poruszania się pojazdu. \\
+Orientacja pojazdu & Kierunek, w którym skierowany jest samochód. \\
+Położenie względem trasy & Informacja o położeniu pojazdu względem przebiegu toru. \\
+Geometria trasy & Informacje o najbliższym fragmencie trasy, w szczególności o zakrętach. \\
+Postęp na trasie & Informacja o stopniu pokonania wyznaczonej trasy. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Powyższy zestaw stanowi wstępną propozycję obserwacji. Ostateczny zakres zmiennych zostanie określony po sprawdzeniu rzeczywistych danych udostępnianych przez bibliotekę TrackmaniaRL.
+
+\subsection{Akcje}
+
+Agent będzie podejmował decyzje dotyczące sterowania pojazdem. Wstępnie przewiduje się wykorzystanie następujących działań:
+
+\begin{center}
+\begin{tabular}{p{0.30\textwidth}p{0.60\textwidth}}
+\toprule
+Akcja & Opis \\
+\midrule
+Przyspieszanie & Zwiększanie prędkości pojazdu poprzez użycie gazu. \\
+Hamowanie & Zmniejszanie prędkości pojazdu poprzez użycie hamulca. \\
+Skręt w lewo & Zmiana kierunku jazdy w lewą stronę. \\
+Skręt w prawo & Zmiana kierunku jazdy w prawą stronę. \\
+Brak skrętu & Utrzymywanie aktualnego kierunku jazdy. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Dokładna reprezentacja przestrzeni akcji, w szczególności wybór pomiędzy akcjami dyskretnymi i ciągłymi, zostanie ustalona na etapie implementacji po weryfikacji możliwości biblioteki TrackmaniaRL.
+
+\subsection{Funkcja nagrody}
+
+Funkcja nagrody będzie określać jakość decyzji podejmowanych przez agenta. Jej głównym zadaniem będzie zachęcanie do szybkiego i prawidłowego pokonywania trasy oraz ograniczania błędów jazdy.
+
+Wstępnie rozważane składniki funkcji nagrody obejmują:
+\begin{itemize}
+    \item nagrodę za postęp wzdłuż trasy,
+    \item uwzględnienie czasu przejazdu,
+    \item karę za wypadnięcie poza trasę,
+    \item karę za kolizje i inne błędy jazdy,
+    \item dodatkową nagrodę za ukończenie trasy.
+\end{itemize}
+
+Wstępna postać funkcji nagrody może zostać zapisana jako:
+
+\begin{equation}
+    r_t =
+    w_p \Delta p_t
+    - w_c C_t
+    - w_o O_t
+    - w_t \Delta t
+    + w_f F_t
+\end{equation}
+
+gdzie:
+\begin{itemize}
+    \item $\Delta p_t$ oznacza postęp pojazdu na trasie,
+    \item $C_t$ oznacza wystąpienie kolizji,
+    \item $O_t$ oznacza wypadnięcie poza trasę,
+    \item $\Delta t$ oznacza czas trwania kroku,
+    \item $F_t$ oznacza ukończenie trasy,
+    \item $w_p$, $w_c$, $w_o$, $w_t$, $w_f$ oznaczają współczynniki wagowe poszczególnych składników.
+\end{itemize}
+
+Przedstawiona funkcja ma charakter wstępny. Konkretne wartości współczynników oraz sposób obliczania poszczególnych składników zostaną ustalone i zweryfikowane podczas pierwszych testów środowiska.
+
+\subsection{Warunki zakończenia epizodu}
+
+Epizod będzie odpowiadał pojedynczej próbie pokonania wyznaczonej trasy.
+
+Wstępnie przewiduje się zakończenie epizodu w następujących sytuacjach:
+\begin{itemize}
+    \item ukończenie trasy przez pojazd,
+    \item wypadnięcie poza trasę uniemożliwiające kontynuowanie przejazdu,
+    \item wystąpienie sytuacji uznanej za poważny błąd jazdy,
+    \item przekroczenie ustalonego limitu czasu,
+    \item osiągnięcie maksymalnej liczby kroków epizodu.
+\end{itemize}
+
+Szczegółowe kryteria zakończenia epizodu zostaną doprecyzowane po analizie możliwości wykrywania poszczególnych zdarzeń za pomocą telemetrii.
+
+\subsection{Założenia i ograniczenia środowiska}
+
+W projekcie przyjmuje się następujące wstępne założenia:
+\begin{itemize}
+    \item agent będzie sterował pojazdem w grze TrackMania 2020,
+    \item komunikacja z grą będzie realizowana z wykorzystaniem biblioteki TrackmaniaRL,
+    \item agent będzie korzystał z danych telemetrycznych zamiast bezpośredniej analizy obrazu z ekranu,
+    \item uczenie będzie odbywać się poprzez wielokrotne przejazdy wyznaczonej trasy,
+    \item podstawowym celem będzie uzyskanie możliwie krótkiego czasu przejazdu przy zachowaniu skuteczności pokonywania trasy.
+\end{itemize}
+
+Do najważniejszych ograniczeń należą fizyka pojazdu, geometria trasy, ograniczenia sterowania oraz dostępność i częstotliwość danych telemetrycznych.
+
+\subsection{Pojedynczy krok interakcji}
+
+Pojedynczy krok interakcji agenta ze środowiskiem będzie obejmował:
+\begin{enumerate}
+    \item pobranie aktualnej obserwacji telemetrycznej,
+    \item wybór akcji przez agenta,
+    \item przekazanie akcji do środowiska gry,
+    \item wykonanie ruchu pojazdu,
+    \item pobranie nowej obserwacji,
+    \item obliczenie nagrody za wykonane działanie,
+    \item sprawdzenie warunków zakończenia epizodu.
+\end{enumerate}
+
+W ten sposób agent będzie stopniowo zdobywał doświadczenie i doskonalił strategię sterowania.
+
+\subsection{Kryteria oceny skuteczności}
+
+Skuteczność agenta będzie oceniana na podstawie następujących miar:
+\begin{itemize}
+    \item średni czas ukończenia trasy,
+    \item odsetek epizodów zakończonych ukończeniem trasy,
+    \item średni postęp uzyskiwany podczas epizodu,
+    \item liczba kolizji i przypadków wypadnięcia poza trasę,
+    \item stabilność uzyskiwanych wyników pomiędzy kolejnymi przejazdami.
+\end{itemize}
+
+Wyniki agenta uczącego się będą mogły zostać porównane z wynikami agenta bazowego, aby ocenić rzeczywistą skuteczność zastosowanego algorytmu.
+
+\subsection{Elementy wymagające weryfikacji}
+
+Po pierwszych testach środowiska mogą wymagać korekty następujące elementy formalizacji:
+\begin{itemize}
+    \item dostępność i dokładna struktura danych telemetrycznych,
+    \item wybór zmiennych tworzących obserwację agenta,
+    \item sposób reprezentacji przestrzeni akcji,
+    \item wartości współczynników funkcji nagrody,
+    \item kryteria wykrywania kolizji i wypadnięcia poza trasę,
+    \item warunki zakończenia epizodu,
+    \item częstotliwość pobierania obserwacji i wykonywania akcji.
+\end{itemize}
+
+Ostateczna formalizacja zostanie dostosowana do rzeczywistych możliwości środowiska oraz wyników pierwszych testów.
+
+\end{document}
+```
